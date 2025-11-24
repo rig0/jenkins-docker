@@ -86,6 +86,7 @@ pipeline {
           dockerLib.verifyContainer(
             env.CONTAINER_NAME,
             env.VERSION,
+            'localhost',
             env.PORT,
             '/api/version'
           )
@@ -163,13 +164,14 @@ dockerLib.deployContainer('myapp', 'myapp-dev', '8080:3000', 'latest')
 
 ---
 
-### `verifyContainer(containerName, expectedVersion, port, healthEndpoint, maxAttempts, delaySeconds)`
+### `verifyContainer(containerName, expectedVersion, host, port, healthEndpoint, maxAttempts, delaySeconds)`
 
 Verifies that a container has started successfully and is running the expected version.
 
 **Parameters:**
 - `containerName` (String, required): Name of the container to verify
 - `expectedVersion` (String, required): Expected version string to validate
+- `host` (String, required): Host/IP address where the container is accessible (e.g., 'localhost', '10.1.4.2')
 - `port` (String, required): Port the container is listening on
 - `healthEndpoint` (String, required): HTTP endpoint to check (e.g., '/api/version')
 - `maxAttempts` (Integer, optional): Maximum number of verification attempts (default: 10)
@@ -181,10 +183,13 @@ Verifies that a container has started successfully and is running the expected v
 
 **Example:**
 ```groovy
-dockerLib.verifyContainer('myapp', '1.2.3', '8080', '/health')
+dockerLib.verifyContainer('myapp', '1.2.3', 'localhost', '8080', '/health')
 
 // Custom retry settings
-dockerLib.verifyContainer('myapp', '1.2.3', '8080', '/api/version', 20, 3)
+dockerLib.verifyContainer('myapp', '1.2.3', '127.0.0.1', '8080', '/api/version', 20, 3)
+
+// Verify container on different host (e.g., Jenkins in container accessing app container by IP)
+dockerLib.verifyContainer('myapp', '1.2.3', '10.1.4.2', '5182', '/api/version', 20, 3)
 ```
 
 ---
@@ -300,6 +305,7 @@ stage('Verify Container') {
       dockerLib.verifyContainer(
         'myapp',
         env.VERSION,
+        'localhost',
         '8080',
         '/api/health',
         24,
@@ -358,6 +364,10 @@ docker run -v /var/run/docker.sock:/var/run/docker.sock jenkins/jenkins
 2. Check container logs: `docker logs <container-name>`
 3. Verify health endpoint is accessible
 4. Ensure application starts quickly enough
+5. If Jenkins runs in a container, verify the `host` parameter:
+   - Use `localhost` if containers share the host network
+   - Use container IP (e.g., `10.1.4.2`) if on a Docker bridge network
+   - Use container name if on a custom Docker network with DNS
 
 ### Registry Push Authentication Failed
 
@@ -418,7 +428,7 @@ pipeline {
         script {
           dockerLib.buildImage('myapp')
           dockerLib.deployContainer('myapp', 'myapp', '8080')
-          dockerLib.verifyContainer('myapp', env.VERSION, '8080', '/health')
+          dockerLib.verifyContainer('myapp', env.VERSION, 'localhost', '8080', '/health')
         }
       }
     }
@@ -440,6 +450,12 @@ pipeline {
 ```
 
 ## Changelog
+
+### v1.1.0 (2025-11-24)
+- **Breaking Change**: Added `host` parameter to `verifyContainer` function
+  - Allows verification of containers on different hosts/IPs
+  - Required for Jenkins running in containers accessing other containers
+  - Update existing calls to include host parameter (e.g., 'localhost')
 
 ### v1.0.0 (2025-11-24)
 - Initial release

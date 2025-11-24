@@ -21,7 +21,7 @@
  *   dockerLib.deployContainer('myapp', 'myapp-container', '8080')
  *
  *   // Verify container is running with correct version
- *   dockerLib.verifyContainer('myapp-container', '1.2.3', '8080', '/api/version')
+ *   dockerLib.verifyContainer('myapp-container', '1.2.3', 'localhost', '8080', '/api/version')
  *
  *   // Push to registry
  *   dockerLib.pushToRegistry('myapp', 'registry.example.com', '1.2.3', 'latest', 'DOCKER_CREDS')
@@ -109,6 +109,7 @@ def deployContainer(String imageName, String containerName, String port, String 
  *
  * @param containerName Name of the container to verify
  * @param expectedVersion Expected version string to validate
+ * @param host Host/IP address where the container is accessible
  * @param port Port the container is listening on
  * @param healthEndpoint HTTP endpoint to check (e.g., '/api/version')
  * @param maxAttempts Maximum number of verification attempts (default: 10)
@@ -117,11 +118,15 @@ def deployContainer(String imageName, String containerName, String port, String 
  * @throws Error if container fails to start or version mismatch
  *
  * @example
- * dockerLib.verifyContainer('myapp', '1.2.3', '8080', '/health')
+ * dockerLib.verifyContainer('myapp', '1.2.3', 'localhost', '8080', '/health')
  *
  * @example
  * // Custom retry settings
- * dockerLib.verifyContainer('myapp', '1.2.3', '127.0.0.1','8080', '/api/version', 20, 3)
+ * dockerLib.verifyContainer('myapp', '1.2.3', '127.0.0.1', '8080', '/api/version', 20, 3)
+ *
+ * @example
+ * // Verify container on different host (e.g., Jenkins in container accessing app by IP)
+ * dockerLib.verifyContainer('myapp', '1.2.3', '10.1.4.2', '5182', '/api/version', 20, 3)
  */
 def verifyContainer(String containerName, String expectedVersion, String host, String port, String healthEndpoint, int maxAttempts = 10, int delaySeconds = 5) {
   echo "🔍 Verifying container: ${containerName}"
