@@ -31,7 +31,7 @@ A comprehensive Jenkins shared library for Docker container lifecycle management
    - **Default version**: `main`
    - **Retrieval method**: Modern SCM
    - **Source Code Management**: Git
-   - **Project Repository**: `https://github.com/rig0/jenkins-docker.git` (or your Git URL)
+   - **Project Repository**: `https://github.com/rig0/jenkins-docker.git`
 
 ### Option 2: Pipeline-Specific Library
 
