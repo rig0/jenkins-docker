@@ -121,9 +121,9 @@ def deployContainer(String imageName, String containerName, String port, String 
  *
  * @example
  * // Custom retry settings
- * dockerLib.verifyContainer('myapp', '1.2.3', '8080', '/api/version', 20, 3)
+ * dockerLib.verifyContainer('myapp', '1.2.3', '127.0.0.1','8080', '/api/version', 20, 3)
  */
-def verifyContainer(String containerName, String expectedVersion, String port, String healthEndpoint, int maxAttempts = 10, int delaySeconds = 5) {
+def verifyContainer(String containerName, String expectedVersion, String host, String port, String healthEndpoint, int maxAttempts = 10, int delaySeconds = 5) {
   echo "🔍 Verifying container: ${containerName}"
   echo "Expected version: ${expectedVersion}"
 
@@ -143,7 +143,7 @@ def verifyContainer(String containerName, String expectedVersion, String port, S
 
       // Try to hit the health check endpoint
       def response = sh(
-        script: "curl -s http://localhost:${port}${healthEndpoint}",
+        script: "curl -s http://${host}:${port}${healthEndpoint}",
         returnStdout: true
       ).trim()
 
