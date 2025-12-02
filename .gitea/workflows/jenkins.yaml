@@ -7,7 +7,7 @@ on:
 
 jobs:
   trigger_jenkins:
-    runs-on: [self-hosted, Dev-Stack]
+    runs-on: Dev-Stack
     steps:
       - name: Load Environment
         run: |
