@@ -2,13 +2,12 @@
 
 # Jenkins Docker Library
 
-![CI/CD](https://img.shields.io/badge/CI%2FCD-239120?logo=gitlab&logoColor=white)
 ![Jenkins](https://img.shields.io/badge/Jenkins-D24939?logo=jenkins&logoColor=white)
+![CI/CD](https://img.shields.io/badge/CI%2FCD-239120?logo=gitlab&logoColor=white)
 ![Groovy](https://img.shields.io/badge/Groovy-5a92a7?logo=apachegroovy&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
 
-![Release](https://img.shields.io/github/v/release/rig0/jenkins-docker?labelColor=222&color=80ff63)
-![Stability](https://img.shields.io/badge/stability-stable-80ff63?labelColor=222)
+![Latest Tag](https://img.shields.io/github/v/tag/rig0/jenkins-docker?labelColor=222&color=80ff63&label=latest)
 ![Maintained](https://img.shields.io/badge/maintained-yes-80ff63?labelColor=222)
 ![GitHub last commit](https://img.shields.io/github/last-commit/rig0/jenkins-docker?labelColor=222&color=80ff63)
 
