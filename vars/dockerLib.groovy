@@ -95,6 +95,22 @@ def deployContainer(String imageName, String containerName, String port, String 
   """
 
   echo "✅ Container deployed successfully"
+
+  // Wait 2 seconds and check if container is still running
+  sleep(2)
+  def stillRunning = sh(
+    script: "docker ps -q -f name=${containerName}",
+    returnStdout: true
+  ).trim()
+
+  if (!stillRunning) {
+    echo "⚠️ WARNING: Container crashed immediately after startup!"
+    echo "📋 Container logs:"
+    sh "docker logs ${containerName} 2>&1 || true"
+    error("Container ${containerName} failed to start")
+  }
+
+  echo "✅ Container is running"
 }
 
 /**
