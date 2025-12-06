@@ -143,7 +143,14 @@ def verifyContainer(String containerName, String expectedVersion, String host, S
       ).trim()
 
       if (!containerRunning) {
-        error("Container ${containerName} is not running")
+        // Container crashed - get logs for debugging
+        echo "❌ Container ${containerName} is not running. Fetching logs..."
+        def logs = sh(
+          script: "docker logs ${containerName} 2>&1 || echo 'No logs available'",
+          returnStdout: true
+        ).trim()
+        echo "Container logs:\n${logs}"
+        error("Container ${containerName} crashed on startup")
       }
 
       // Try to hit the health check endpoint
