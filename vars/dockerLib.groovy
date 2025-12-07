@@ -88,7 +88,6 @@ def deployContainer(String imageName, String containerName, String port, String 
   sh """
     docker run -d \
       --name ${containerName} \
-      --user 1000:1000 \
       -p ${port}:${port} \
       --restart always \
       ${imageName}:${tag}
