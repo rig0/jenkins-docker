@@ -68,14 +68,18 @@ def buildImage(String imageName, String tag = 'source') {
  * @param containerName Name to give the container
  * @param port Port to expose (format: 'hostPort:containerPort' or 'port')
  * @param tag Image tag to use (default: 'source')
+ * @param envVars Map of environment variables to pass to container (default: empty)
  *
  * @example
  * dockerLib.deployContainer('myapp', 'myapp-prod', '8080')
  *
  * @example
  * dockerLib.deployContainer('myapp', 'myapp-dev', '8080:3000', 'latest')
+ *
+ * @example
+ * dockerLib.deployContainer('myapp', 'myapp-prod', '8080', 'source', [API_TOKEN: 'secret123'])
  */
-def deployContainer(String imageName, String containerName, String port, String tag = 'source') {
+def deployContainer(String imageName, String containerName, String port, String tag = 'source', Map envVars = [:]) {
   echo "🚀 Deploying container: ${containerName}"
 
   // Stop and remove existing container if it exists
@@ -84,12 +88,21 @@ def deployContainer(String imageName, String containerName, String port, String 
     docker rm ${containerName} 2>/dev/null || true
   """
 
+  // Build environment variable flags
+  def envFlags = ''
+  if (envVars) {
+    envVars.each { key, value ->
+      envFlags += "-e ${key}='${value}' "
+    }
+  }
+
   echo "Starting new container on port ${port}"
   sh """
     docker run -d \
       --name ${containerName} \
       -p ${port}:${port} \
       --restart always \
+      ${envFlags}\
       ${imageName}:${tag}
   """
 

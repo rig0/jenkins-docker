@@ -156,7 +156,7 @@ dockerLib.buildImage('myapp') // Uses default 'source' tag
 
 ---
 
-### `deployContainer(imageName, containerName, port, tag)`
+### `deployContainer(imageName, containerName, port, tag, envVars)`
 
 Deploys a Docker container, automatically stopping and removing any existing container with the same name.
 
@@ -165,6 +165,7 @@ Deploys a Docker container, automatically stopping and removing any existing con
 - `containerName` (String, required): Name to give the container
 - `port` (String, required): Port to expose (format: 'hostPort:containerPort' or 'port')
 - `tag` (String, optional): Image tag to use (default: `'source'`)
+- `envVars` (Map, optional): Environment variables to pass to container (default: `[:]`)
 
 **Container Settings:**
 - Runs as user 1000:1000
@@ -175,6 +176,7 @@ Deploys a Docker container, automatically stopping and removing any existing con
 ```groovy
 dockerLib.deployContainer('myapp', 'myapp-prod', '8080')
 dockerLib.deployContainer('myapp', 'myapp-dev', '8080:3000', 'latest')
+dockerLib.deployContainer('myapp', 'myapp-prod', '8080', 'source', [API_TOKEN: 'secret123'])
 ```
 
 ---
@@ -263,6 +265,21 @@ dockerLib.cleanup('myapp', 'myapp-container', 'registry.example.com')
 ```
 
 ## Advanced Usage
+
+### Passing Environment Variables
+
+```groovy
+stage('Deploy Container') {
+  steps {
+    script {
+      dockerLib.deployContainer('myapp', 'myapp', '8080', 'source', [
+        API_TOKEN: env.API_TOKEN,
+        DATABASE_URL: 'postgres://localhost:5432'
+      ])
+    }
+  }
+}
+```
 
 ### Conditional Docker Operations
 
@@ -465,6 +482,9 @@ pipeline {
 ```
 
 ## Changelog
+
+### v1.2.0 (2025-12-20)
+- Added `envVars` parameter to `deployContainer` for passing environment variables to containers
 
 ### v1.1.0 (2025-11-24)
 - **Breaking Change**: Added `host` parameter to `verifyContainer` function
