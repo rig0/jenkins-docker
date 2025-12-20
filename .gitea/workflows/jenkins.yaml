@@ -3,25 +3,27 @@ name: Trigger Jenkins Build
 on:
   push:
     branches:
-      - main
+    - main
 
 jobs:
   trigger_jenkins:
     runs-on: Dev-Stack
     steps:
-      - name: Load Environment
-        run: |
-          if [ -f .env ]; then
-            export $(grep -v '^#' .env | xargs)
-          fi
-          echo "Environment loaded."
+    - name: Load Environment
+      run: |
+        if [ -f .env ]; then
+          export $(grep -v '^#' .env | xargs)
+        fi
+        echo "Environment loaded."
 
-      - name: Trigger Jenkins Pipeline - Update Version
-        run: |
-          JENKINS_JOB="Jenkins-Docker"
-          JENKINS_TRIGGER_TOKEN="trigger-flow"
-          
-          echo "Triggering Jenkins build via REST API..."
+    - name: Trigger Jenkins Pipeline - Update Version
+      run: |
+        JENKINS_JOB="Jenkins-Docker"
+        JENKINS_TRIGGER_TOKEN="trigger-flow"
 
-          curl -X POST "${JENKINS_URL}/job/${JENKINS_JOB}/buildWithParameters?token=${JENKINS_TRIGGER_TOKEN}" \
-            --user "${JENKINS_USER}:${JENKINS_TOKEN}"
+        echo "Triggering Jenkins build via REST API..."
+
+        curl -X POST "${JENKINS_URL}/job/${JENKINS_JOB}/buildWithParameters?token=${JENKINS_TRIGGER_TOKEN}" \
+          --user "${JENKINS_USER}:${JENKINS_TOKEN}"
+
+#
