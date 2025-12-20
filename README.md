@@ -244,10 +244,11 @@ Removes old Docker containers and images to free up disk space. Only removes art
 - `registry` (String, optional): Registry URL to clean registry images
 
 **Cleanup Operations:**
-1. Remove backup containers (e.g., myapp-backup)
-2. Remove dangling/untagged images
-3. Remove old local images (keeps only the source tag)
-4. Remove old registry images (keeps only latest and current version)
+1. Stop and remove the main container
+2. Remove backup containers (e.g., myapp-backup)
+3. Remove dangling/untagged images
+4. Remove old local images (keeps only the source tag)
+5. Remove old registry images (keeps only latest and current version)
 
 **Safety:**
 - Only removes images/containers matching the specified names
@@ -482,6 +483,9 @@ pipeline {
 ```
 
 ## Changelog
+
+### v1.2.1 (2025-12-20)
+- Fixed `cleanup` function to stop and remove main container before cleaning images
 
 ### v1.2.0 (2025-12-20)
 - Added `envVars` parameter to `deployContainer` for passing environment variables to containers

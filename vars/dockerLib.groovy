@@ -303,7 +303,13 @@ def pushToRegistry(String imageName, String registry, String version, String sou
 def cleanup(String imageName, String containerName, String registry = null) {
   echo "🧹 Cleaning up Docker artifacts for ${imageName}"
 
-  // Remove stopped containers
+  // Stop and remove the main container
+  sh """
+    docker stop ${containerName} 2>/dev/null || true
+    docker rm ${containerName} 2>/dev/null || true
+  """
+
+  // Remove backup containers
   sh """
     docker ps -a -q -f name=${containerName}-backup | xargs -r docker rm -f || true
   """
